@@ -44,6 +44,36 @@ public class MainActivity extends AppCompatActivity {
         );
 
         listNotes.setAdapter(adapter);
+        listNotes.setOnItemClickListener((parent, view, position, id) -> {
+
+            try {
+                SharedPreferences prefs =
+                        getSharedPreferences("MyNotes", MODE_PRIVATE);
+
+                String savedNotes = prefs.getString("notes", "[]");
+
+                JSONArray notes = new JSONArray(savedNotes);
+
+                JSONObject note = notes.getJSONObject(position);
+
+                String title = note.getString("title");
+                String content = note.getString("content");
+
+                Intent intent = new Intent(MainActivity.this,
+                        ViewNoteActivity.class);
+
+                intent.putExtra("title", title);
+                intent.putExtra("content", content);
+
+                startActivity(intent);
+
+            } catch (Exception e) {
+                Toast.makeText(this,
+                        "Unable to open note",
+                        Toast.LENGTH_SHORT).show();
+            }
+
+        });
 
         btnAddNote.setOnClickListener(v -> {
             Intent intent = new Intent(
